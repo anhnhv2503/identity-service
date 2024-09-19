@@ -19,7 +19,7 @@ public class UserController {
 
     private final IUserService userService;
 
-    @PostMapping
+    @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<UserDTO> insertUser(@RequestBody @Valid UserDTO userDTO) {
         ApiResponse<UserDTO> apiResponse = new ApiResponse<>();
