@@ -9,10 +9,10 @@ public class UserMapper {
         User user = new User();
         user.setId(userDTO.getId());
         user.setUsername(userDTO.getUsername());
-        user.setPassword(userDTO.getPassword());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setDob(userDTO.getDob());
+        user.setRoles(userDTO.getRoles());
 
         return user;
     }
@@ -21,10 +21,10 @@ public class UserMapper {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
-        userDTO.setPassword(user.getPassword());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setDob(user.getDob());
+        userDTO.setRoles(user.getRoles());
 
         return userDTO;
     }

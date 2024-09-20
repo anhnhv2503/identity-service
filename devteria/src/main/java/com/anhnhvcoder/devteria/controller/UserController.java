@@ -2,12 +2,15 @@ package com.anhnhvcoder.devteria.controller;
 
 import com.anhnhvcoder.devteria.dto.ApiResponse;
 import com.anhnhvcoder.devteria.dto.UserDTO;
+import com.anhnhvcoder.devteria.model.User;
 import com.anhnhvcoder.devteria.service.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,16 +18,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/v2/users")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
+@Slf4j
 public class UserController {
 
     private final IUserService userService;
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<UserDTO> insertUser(@RequestBody @Valid UserDTO userDTO) {
+    public ApiResponse<UserDTO> insertUser(@RequestBody @Valid User user) {
         ApiResponse<UserDTO> apiResponse = new ApiResponse<>();
 
-        UserDTO dto = userService.addUser(userDTO);
+        UserDTO dto = userService.addUser(user);
         apiResponse.setResult(dto);
 
         return apiResponse;
@@ -32,6 +36,11 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
+
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("User: {}", auth.getName());
+        auth.getAuthorities().stream().map(grantedAuthority -> grantedAuthority.getAuthority()).forEach(log::info);
 
         List<UserDTO> dtos = userService.getAllUsers();
 
@@ -49,8 +58,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable String id,@Valid @RequestBody UserDTO userDTO) {
-        return new ResponseEntity<>(userService.updateUser(id, userDTO), HttpStatus.OK);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable String id,@Valid @RequestBody User user) {
+        return new ResponseEntity<>(userService.updateUser(id, user), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.anhnhvcoder.devteria.service;
 
 import com.anhnhvcoder.devteria.dto.UserDTO;
+import com.anhnhvcoder.devteria.enums.ROLE;
 import com.anhnhvcoder.devteria.exception.AppException;
 import com.anhnhvcoder.devteria.exception.ErrorCode;
 import com.anhnhvcoder.devteria.mapper.UserMapper;
@@ -12,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,23 +22,26 @@ import java.util.stream.Collectors;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDTO addUser(UserDTO userDTO) {
+    public UserDTO addUser(User user) {
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-
-        if(userRepository.findByUsername(userDTO.getUsername()).isPresent()){
+        if(userRepository.findByUsername(user.getUsername()).isPresent()){
             throw new AppException(ErrorCode.USER_EXISTED);
         }
 
-        User user = UserMapper.mapUserDTOToUser(userDTO);
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(ROLE.USER.name());
+        user.setRoles(roles);
 
         userRepository.save(user);
 
-        return UserMapper.mapUserToUserDTO(user);
+        UserDTO dto = UserMapper.mapUserToUserDTO(user);
+
+        return dto;
     }
 
     @Override
@@ -55,14 +60,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserDTO updateUser(String id, UserDTO userDTO) {
-        User user = userRepository.findById(id).orElseThrow(() ->
+    public UserDTO updateUser(String id, User user) {
+        User thisUser = userRepository.findById(id).orElseThrow(() ->
                 new AppException(ErrorCode.USER_NOT_FOUND));
 
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setUsername(userDTO.getUsername());
-        user.setPassword(userDTO.getPassword());
+        thisUser.setFirstName(user.getFirstName());
+        thisUser.setLastName(user.getLastName());
+        thisUser.setUsername(user.getUsername());
+        thisUser.setPassword(user.getPassword());
         userRepository.save(user);
 
         return UserMapper.mapUserToUserDTO(user);
