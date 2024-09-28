@@ -8,7 +8,10 @@ import com.anhnhvcoder.devteria.mapper.UserMapper;
 import com.anhnhvcoder.devteria.model.User;
 import com.anhnhvcoder.devteria.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
@@ -52,6 +56,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+    @PostAuthorize("returnObject.username == authentication.name")
     public UserDTO getUserById(String id) {
         User user = userRepository.findById(id).orElseThrow(() ->
                 new AppException(ErrorCode.USER_NOT_FOUND));
@@ -78,6 +83,15 @@ public class UserService implements IUserService {
 
         User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         userRepository.delete(user);
+    }
+
+    @Override
+    public UserDTO getMyProfile() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        return UserMapper.mapUserToUserDTO(user);
     }
 
 }

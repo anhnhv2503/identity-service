@@ -88,7 +88,7 @@ public class AuthenticationService {
 
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(thisUser.getFirstName())
+                .subject(thisUser.getUsername())
                 .issuer(thisUser.getFirstName() + " " + thisUser.getLastName())
                 .issueTime(new Date())
                 .expirationTime(new Date(

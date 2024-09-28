@@ -16,4 +16,6 @@ public interface IUserService {
     UserDTO updateUser(String id, User User);
 
     void deleteUser(String id);
+
+    UserDTO getMyProfile();
 }
