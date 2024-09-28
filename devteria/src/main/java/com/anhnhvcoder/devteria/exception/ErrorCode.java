@@ -1,23 +1,27 @@
 package com.anhnhvcoder.devteria.exception;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-    UNCATEGORIZED_EXCEPTION(9999,"Uncategorized Exception"),
-    INVALID_KEY(1001, "Invalid Key"),
-    USER_EXISTED(1002, "User already existed"),
-    USERNAME_INVALID(1003, "Username is invalid"),
-    PASSWORD_INVALID(1004, "Password is invalid"),
-    USER_NOT_FOUND(1005, "User not found"),
-    UNAUTHENTICATED(1006, "Unauthenticated"),
+    UNCATEGORIZED_EXCEPTION(9999,"Uncategorized Exception", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_KEY(1001, "Invalid Key", HttpStatus.BAD_REQUEST),
+    USER_EXISTED(1002, "User already existed", HttpStatus.BAD_REQUEST),
+    USERNAME_INVALID(1003, "Username is invalid", HttpStatus.BAD_REQUEST),
+    PASSWORD_INVALID(1004, "Password is invalid", HttpStatus.BAD_REQUEST),
+    USER_NOT_FOUND(1005, "User not found", HttpStatus.NOT_FOUND),
+    UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    ACCESS_DENIED(1007, "Access Denied", HttpStatus.FORBIDDEN),
 ;
 
-    ErrorCode(int code, String message) {
+    ErrorCode(int code, String message, HttpStatus httpStatus) {
         this.code = code;
         this.message = message;
+        this.httpStatus = httpStatus;
     }
 
-    private final int code;
-    private final String message;
+    private  int code;
+    private  String message;
+    private  HttpStatus httpStatus;
 }
