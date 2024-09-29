@@ -1,6 +1,6 @@
 package com.anhnhvcoder.devteria.service;
 
-import com.anhnhvcoder.devteria.dto.UserDTO;
+import com.anhnhvcoder.devteria.dto.request.UserDTO;
 import com.anhnhvcoder.devteria.model.User;
 
 import java.util.List;

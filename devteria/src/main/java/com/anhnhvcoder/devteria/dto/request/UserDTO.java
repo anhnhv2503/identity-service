@@ -1,4 +1,4 @@
-package com.anhnhvcoder.devteria.dto;
+package com.anhnhvcoder.devteria.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotEmpty;

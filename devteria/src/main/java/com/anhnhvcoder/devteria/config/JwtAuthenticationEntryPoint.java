@@ -1,6 +1,6 @@
 package com.anhnhvcoder.devteria.config;
 
-import com.anhnhvcoder.devteria.dto.ApiResponse;
+import com.anhnhvcoder.devteria.dto.response.ApiResponse;
 import com.anhnhvcoder.devteria.exception.ErrorCode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

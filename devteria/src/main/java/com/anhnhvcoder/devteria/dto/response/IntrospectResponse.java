@@ -1,4 +1,4 @@
-package com.anhnhvcoder.devteria.dto;
+package com.anhnhvcoder.devteria.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,9 +8,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationRequest {
+public class IntrospectResponse {
 
-    String username;
-    String password;
-
+    boolean valid;
 }

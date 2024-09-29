@@ -1,6 +1,6 @@
 package com.anhnhvcoder.devteria.exception;
 
-import com.anhnhvcoder.devteria.dto.ApiResponse;
+import com.anhnhvcoder.devteria.dto.response.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<Map<String, String >> handleRuntimeException(RuntimeException e) {
+    public ResponseEntity<Map<String, String >> handleRuntimeException(AppException e) {
         Map<String, String > error = new HashMap<>();
         error.put("message", e.getMessage());
         return ResponseEntity.badRequest().body(error);

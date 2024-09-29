@@ -1,9 +1,9 @@
 package com.anhnhvcoder.devteria.service;
 
-import com.anhnhvcoder.devteria.dto.AuthenticationRequest;
-import com.anhnhvcoder.devteria.dto.AuthenticationResponse;
-import com.anhnhvcoder.devteria.dto.IntrospectRequest;
-import com.anhnhvcoder.devteria.dto.IntrospectResponse;
+import com.anhnhvcoder.devteria.dto.request.AuthenticationRequest;
+import com.anhnhvcoder.devteria.dto.response.AuthenticationResponse;
+import com.anhnhvcoder.devteria.dto.request.IntrospectRequest;
+import com.anhnhvcoder.devteria.dto.response.IntrospectResponse;
 import com.anhnhvcoder.devteria.exception.AppException;
 import com.anhnhvcoder.devteria.exception.ErrorCode;
 import com.anhnhvcoder.devteria.model.User;
@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -63,7 +62,7 @@ public class AuthenticationService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
         var user = userRepository.findByUsername(authenticationRequest.getUsername())
-                .orElseThrow(() -> new RuntimeException("User does not exist"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
@@ -84,7 +83,7 @@ public class AuthenticationService {
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
 
         User thisUser = userRepository.findByUsername(user.getUsername())
-                .orElseThrow(() -> new RuntimeException("User does not exist"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
@@ -115,9 +114,9 @@ public class AuthenticationService {
 
     private String buildScope(User user){
         StringJoiner joiner = new StringJoiner(" ");
-        if(!CollectionUtils.isEmpty(user.getRoles())){
-            user.getRoles().forEach(joiner::add);
-        }
+//        if(!CollectionUtils.isEmpty(user.getRoles())){
+//            user.getRoles().forEach(joiner::add);
+//        }
         return joiner.toString();
     }
 

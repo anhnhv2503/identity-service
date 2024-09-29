@@ -1,6 +1,6 @@
 package com.anhnhvcoder.devteria.service;
 
-import com.anhnhvcoder.devteria.dto.UserDTO;
+import com.anhnhvcoder.devteria.dto.request.UserDTO;
 import com.anhnhvcoder.devteria.enums.ROLE;
 import com.anhnhvcoder.devteria.exception.AppException;
 import com.anhnhvcoder.devteria.exception.ErrorCode;
@@ -9,10 +9,8 @@ import com.anhnhvcoder.devteria.model.User;
 import com.anhnhvcoder.devteria.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +37,7 @@ public class UserService implements IUserService {
 
         HashSet<String> roles = new HashSet<>();
         roles.add(ROLE.USER.name());
-        user.setRoles(roles);
+        //user.setRoles(roles);
 
         userRepository.save(user);
 

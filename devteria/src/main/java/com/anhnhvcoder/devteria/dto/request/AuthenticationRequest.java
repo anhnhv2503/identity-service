@@ -1,4 +1,4 @@
-package com.anhnhvcoder.devteria.dto;
+package com.anhnhvcoder.devteria.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +8,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationResponse {
-    String token;
-    boolean isAuthenticated;
+public class AuthenticationRequest {
+
+    String username;
+    String password;
+
 }

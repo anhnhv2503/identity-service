@@ -1,6 +1,6 @@
 package com.anhnhvcoder.devteria.mapper;
 
-import com.anhnhvcoder.devteria.dto.UserDTO;
+import com.anhnhvcoder.devteria.dto.request.UserDTO;
 import com.anhnhvcoder.devteria.model.User;
 
 public class UserMapper {
@@ -12,7 +12,7 @@ public class UserMapper {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setDob(userDTO.getDob());
-        user.setRoles(userDTO.getRoles());
+        //user.setRoles(userDTO.getRoles());
 
         return user;
     }
@@ -24,7 +24,7 @@ public class UserMapper {
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setDob(user.getDob());
-        userDTO.setRoles(user.getRoles());
+        //userDTO.setRoles(user.getRoles());
 
         return userDTO;
     }

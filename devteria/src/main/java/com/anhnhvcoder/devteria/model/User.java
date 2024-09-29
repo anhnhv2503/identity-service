@@ -29,8 +29,8 @@ public class User {
     private String firstName;
     @NotEmpty(message = "LastName is required")
     private String lastName;
-
     private LocalDate dob;
-    private Set<String> roles;
+    @ManyToMany
+    private Set<Role> roles;
 
 }

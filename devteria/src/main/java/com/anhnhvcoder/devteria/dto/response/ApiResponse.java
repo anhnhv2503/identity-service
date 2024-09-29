@@ -1,4 +1,4 @@
-package com.anhnhvcoder.devteria.dto;
+package com.anhnhvcoder.devteria.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;

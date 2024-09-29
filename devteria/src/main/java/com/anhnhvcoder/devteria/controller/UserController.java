@@ -1,7 +1,7 @@
 package com.anhnhvcoder.devteria.controller;
 
-import com.anhnhvcoder.devteria.dto.ApiResponse;
-import com.anhnhvcoder.devteria.dto.UserDTO;
+import com.anhnhvcoder.devteria.dto.response.ApiResponse;
+import com.anhnhvcoder.devteria.dto.request.UserDTO;
 import com.anhnhvcoder.devteria.model.User;
 import com.anhnhvcoder.devteria.service.IUserService;
 import jakarta.validation.Valid;
@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;

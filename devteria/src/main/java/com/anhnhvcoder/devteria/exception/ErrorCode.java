@@ -13,6 +13,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(1005, "User not found", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     ACCESS_DENIED(1007, "Access Denied", HttpStatus.FORBIDDEN),
+    ROLE_NOT_FOUND(1008, "Role not found", HttpStatus.NOT_FOUND),
 ;
 
     ErrorCode(int code, String message, HttpStatus httpStatus) {
