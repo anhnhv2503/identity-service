@@ -2,6 +2,7 @@ package com.anhnhvcoder.devteria.config;
 
 import com.anhnhvcoder.devteria.enums.ROLE;
 import com.anhnhvcoder.devteria.model.User;
+import com.anhnhvcoder.devteria.repository.RoleRepository;
 import com.anhnhvcoder.devteria.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 @RequiredArgsConstructor
@@ -21,21 +23,21 @@ import java.util.HashSet;
 public class ApplicationInitConfig {
 
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Bean
     ApplicationRunner init(UserRepository userRepository) {
         return args -> {
             if(userRepository.findByUsername("admin").isEmpty()){
                 // Add some default users
-                HashSet<String> roles = new HashSet<>();
-                roles.add(ROLE.ADMIN.name());
+                var role = roleRepository.findByName(ROLE.ADMIN.name());
                 User user = User.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("admin"))
                         .firstName("Admin")
                         .lastName("Admin")
                         .dob(LocalDate.of(2003, 3, 25))
-                        //.roles(roles)
+                        .roles(Set.of(role))
                         .build();
                 userRepository.save(user);
 

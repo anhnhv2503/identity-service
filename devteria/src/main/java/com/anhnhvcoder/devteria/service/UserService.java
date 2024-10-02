@@ -6,6 +6,7 @@ import com.anhnhvcoder.devteria.exception.AppException;
 import com.anhnhvcoder.devteria.exception.ErrorCode;
 import com.anhnhvcoder.devteria.mapper.UserMapper;
 import com.anhnhvcoder.devteria.model.User;
+import com.anhnhvcoder.devteria.repository.RoleRepository;
 import com.anhnhvcoder.devteria.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +27,7 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Override
     public UserDTO addUser(User user) {
@@ -35,9 +38,8 @@ public class UserService implements IUserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(ROLE.USER.name());
-        //user.setRoles(roles);
+        var role = roleRepository.findByName(ROLE.USER.name());
+        user.setRoles(Set.of(role));
 
         userRepository.save(user);
 
