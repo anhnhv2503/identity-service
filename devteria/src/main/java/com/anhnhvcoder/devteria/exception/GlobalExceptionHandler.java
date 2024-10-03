@@ -1,6 +1,7 @@
 package com.anhnhvcoder.devteria.exception;
 
 import com.anhnhvcoder.devteria.dto.response.ApiResponse;
+import jakarta.validation.ConstraintViolation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,9 +10,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final String MIN_VALUE = "min";
 
     @ExceptionHandler(AppException.class)
     public ResponseEntity<Map<String, String >> handleRuntimeException(AppException e) {
@@ -20,18 +24,31 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public ResponseEntity<String> handlingMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-//        return ResponseEntity.badRequest().body(e.getFieldError().getDefaultMessage());
-//    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
-        return ResponseEntity.badRequest().body(errors);
+    public ResponseEntity<ApiResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        String enumKey = e.getFieldError().getDefaultMessage();
+
+        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+
+        Map<String, Object> attributes = null;
+        try {
+            errorCode = ErrorCode.valueOf(enumKey);
+            var constraintViolation = e.getBindingResult().getAllErrors().getFirst().unwrap(ConstraintViolation.class);
+            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
+
+        } catch (IllegalArgumentException ex) {
+
+        }
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(Objects.nonNull(attributes) ? replaceMinValue(errorCode.getMessage(), attributes) : errorCode.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    private String replaceMinValue(String message, Map<String, Object> attributes) {
+        String minValue = String.valueOf(attributes.get(MIN_VALUE));
+
+        return message.replace("{" + MIN_VALUE + "}", minValue);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

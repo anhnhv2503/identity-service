@@ -1,5 +1,6 @@
 package com.anhnhvcoder.devteria.model;
 
+import com.anhnhvcoder.devteria.validator.DobConstraint;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -29,6 +30,7 @@ public class User {
     private String firstName;
     @NotEmpty(message = "LastName is required")
     private String lastName;
+    @DobConstraint(min = 11, message = "INVALID_DOB")
     private LocalDate dob;
     @ManyToMany
     private Set<Role> roles;
