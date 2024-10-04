@@ -2,12 +2,13 @@ package com.anhnhvcoder.devteria.service;
 
 import com.anhnhvcoder.devteria.dto.request.UserDTO;
 import com.anhnhvcoder.devteria.model.User;
+import jakarta.mail.MessagingException;
 
 import java.util.List;
 
 public interface IUserService {
 
-    UserDTO addUser(User user);
+    UserDTO addUser(User user) throws MessagingException;
 
     List<UserDTO> getAllUsers();
 

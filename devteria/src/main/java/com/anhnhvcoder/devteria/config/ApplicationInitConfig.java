@@ -36,6 +36,7 @@ public class ApplicationInitConfig {
                         .password(passwordEncoder.encode("admin"))
                         .firstName("Admin")
                         .lastName("Admin")
+                        .email("prjonlineshop@gmail.com")
                         .dob(LocalDate.of(2003, 3, 25))
                         .roles(Set.of(role))
                         .build();

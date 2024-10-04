@@ -14,7 +14,6 @@ public class UserMapper {
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setDob(userDTO.getDob());
-        //user.setRoles(userDTO.getRoles());
 
         return user;
     }
@@ -26,6 +25,7 @@ public class UserMapper {
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setDob(user.getDob());
+        userDTO.setEmail(user.getEmail());
         userDTO.setRoles(user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toSet()));
 
         return userDTO;

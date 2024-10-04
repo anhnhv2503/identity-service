@@ -15,6 +15,7 @@ public enum ErrorCode {
     ACCESS_DENIED(1007, "Access Denied", HttpStatus.FORBIDDEN),
     ROLE_NOT_FOUND(1008, "Role not found", HttpStatus.NOT_FOUND),
     INVALID_DOB(1009, "You need to be at least {min}", HttpStatus.BAD_REQUEST),
+    EMAIL_EXISTED(1010, "Email already existed", HttpStatus.BAD_REQUEST),
 ;
 
     ErrorCode(int code, String message, HttpStatus httpStatus) {

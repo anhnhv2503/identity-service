@@ -4,6 +4,7 @@ import com.anhnhvcoder.devteria.dto.response.ApiResponse;
 import com.anhnhvcoder.devteria.dto.request.UserDTO;
 import com.anhnhvcoder.devteria.model.User;
 import com.anhnhvcoder.devteria.service.IUserService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class UserController {
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<UserDTO> insertUser(@RequestBody @Valid User user) {
+    public ApiResponse<UserDTO> insertUser(@RequestBody @Valid User user) throws MessagingException {
         ApiResponse<UserDTO> apiResponse = new ApiResponse<>();
 
         UserDTO dto = userService.addUser(user);

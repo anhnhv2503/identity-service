@@ -8,6 +8,8 @@ import com.anhnhvcoder.devteria.mapper.UserMapper;
 import com.anhnhvcoder.devteria.model.User;
 import com.anhnhvcoder.devteria.repository.RoleRepository;
 import com.anhnhvcoder.devteria.repository.UserRepository;
+import com.anhnhvcoder.devteria.utils.EmailUtils;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -15,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,12 +32,17 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final EmailService emailService;
+    private final EmailUtils emailUtils;
 
     @Override
-    public UserDTO addUser(User user) {
+    public UserDTO addUser(User user) throws MessagingException {
 
         if(userRepository.findByUsername(user.getUsername()).isPresent()){
             throw new AppException(ErrorCode.USER_EXISTED);
+        }
+        if(userRepository.findByEmail(user.getEmail()).isPresent()){
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -43,10 +52,14 @@ public class UserService implements IUserService {
 
         userRepository.save(user);
 
+        emailService.sendEmail(user.getEmail(), emailUtils.subjectRegister(), emailUtils.bodyRegister(user.getFirstName(), user.getLastName()));
+
         UserDTO dto = UserMapper.mapUserToUserDTO(user);
 
         return dto;
     }
+
+
 
     @Override
     public List<UserDTO> getAllUsers() {
