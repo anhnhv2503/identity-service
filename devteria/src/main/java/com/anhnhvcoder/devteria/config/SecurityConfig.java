@@ -1,5 +1,6 @@
 package com.anhnhvcoder.devteria.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,10 +25,8 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Value("${jwt.signerKey}")
-    protected String SIGNER_KEY;
-
-
+    @Autowired
+    private CustomJwtDecoder customJwtDecoder;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -37,12 +36,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/introspect").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v2/users").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/v2/users/profile").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                         .anyRequest().authenticated()
         );
 
         http.oauth2ResourceServer(resourceServer ->
                 resourceServer.jwt(jwtConfigurer ->
-                        jwtConfigurer.decoder(jwtDecoder())
+                        jwtConfigurer.decoder(customJwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
 
@@ -50,17 +50,6 @@ public class SecurityConfig {
 
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
         return http.build();
-    }
-
-    @Bean
-    JwtDecoder jwtDecoder(){
-
-        SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
-
-       return NimbusJwtDecoder
-               .withSecretKey(secretKeySpec)
-               .macAlgorithm(MacAlgorithm.HS512)
-               .build();
     }
 
     JwtAuthenticationConverter jwtAuthenticationConverter(){

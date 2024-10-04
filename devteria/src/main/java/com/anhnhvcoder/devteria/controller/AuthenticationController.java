@@ -2,6 +2,7 @@ package com.anhnhvcoder.devteria.controller;
 
 import com.anhnhvcoder.devteria.dto.request.AuthenticationRequest;
 import com.anhnhvcoder.devteria.dto.request.IntrospectRequest;
+import com.anhnhvcoder.devteria.dto.request.LogOutRequest;
 import com.anhnhvcoder.devteria.dto.response.ApiResponse;
 import com.anhnhvcoder.devteria.dto.response.AuthenticationResponse;
 import com.anhnhvcoder.devteria.dto.response.IntrospectResponse;
@@ -10,10 +11,7 @@ import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -42,6 +40,12 @@ public class AuthenticationController {
         return ApiResponse.<IntrospectResponse>builder()
                 .result(result)
                 .build();
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout(@RequestBody LogOutRequest request) throws ParseException, JOSEException {
+        authenticationService.logOut(request);
+        return ApiResponse.<Void>builder().build();
     }
 
 
