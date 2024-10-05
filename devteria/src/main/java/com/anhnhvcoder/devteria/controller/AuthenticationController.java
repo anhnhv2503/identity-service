@@ -3,6 +3,7 @@ package com.anhnhvcoder.devteria.controller;
 import com.anhnhvcoder.devteria.dto.request.AuthenticationRequest;
 import com.anhnhvcoder.devteria.dto.request.IntrospectRequest;
 import com.anhnhvcoder.devteria.dto.request.LogOutRequest;
+import com.anhnhvcoder.devteria.dto.request.RefreshRequest;
 import com.anhnhvcoder.devteria.dto.response.ApiResponse;
 import com.anhnhvcoder.devteria.dto.response.AuthenticationResponse;
 import com.anhnhvcoder.devteria.dto.response.IntrospectResponse;
@@ -11,6 +12,7 @@ import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
@@ -46,6 +48,12 @@ public class AuthenticationController {
     public ApiResponse<Void> logout(@RequestBody LogOutRequest request) throws ParseException, JOSEException {
         authenticationService.logOut(request);
         return ApiResponse.<Void>builder().build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse> refreshToken(@RequestBody RefreshRequest request) throws ParseException, JOSEException {
+       var result = authenticationService.refreshToken(request);
+        return ResponseEntity.ok(ApiResponse.builder().result(result).build());
     }
 
 

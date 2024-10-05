@@ -2,6 +2,7 @@ package com.anhnhvcoder.devteria.service;
 
 import com.anhnhvcoder.devteria.dto.request.AuthenticationRequest;
 import com.anhnhvcoder.devteria.dto.request.LogOutRequest;
+import com.anhnhvcoder.devteria.dto.request.RefreshRequest;
 import com.anhnhvcoder.devteria.dto.response.AuthenticationResponse;
 import com.anhnhvcoder.devteria.dto.request.IntrospectRequest;
 import com.anhnhvcoder.devteria.dto.response.IntrospectResponse;
@@ -48,6 +49,14 @@ public class AuthenticationService {
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
+
+    @NonFinal
+    @Value("${jwt.validDuration}")
+    protected Long VALID_DURATION;
+
+    @NonFinal
+    @Value("${jwt.refreshableDuration}")
+    protected Long REFRESHABLE_DURATION;
 
     public IntrospectResponse introspect(IntrospectRequest request)
             throws JOSEException, ParseException {
@@ -98,7 +107,7 @@ public class AuthenticationService {
                 .issuer(thisUser.getFirstName() + " " + thisUser.getLastName())
                 .issueTime(new Date())
                 .expirationTime(new Date(
-                        Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
+                        Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
                 ))
                 .claim("scope", buildScope(thisUser))
                 .claim("id", thisUser.getId())
@@ -120,6 +129,32 @@ public class AuthenticationService {
         }
     }
 
+    public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
+
+        var signedJwt = verifyRefreshToken(request.getToken());
+
+        var jid = signedJwt.getJWTClaimsSet().getJWTID();
+        var user = signedJwt.getJWTClaimsSet().getSubject();
+        var expTime = signedJwt.getJWTClaimsSet().getExpirationTime();
+
+        InvalidToken invalidToken = InvalidToken.builder()
+                .id(jid)
+                .expirationTime(expTime)
+                .build();
+
+        invalidTokenRepository.save(invalidToken);
+
+        User refreshUser = userRepository.findByUsername(user)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        var token = generateToken(refreshUser);
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .isAuthenticated(true)
+                .build();
+    }
+
     private String buildScope(User user){
         StringJoiner joiner = new StringJoiner(" ");
         if(!CollectionUtils.isEmpty(user.getRoles())){
@@ -134,7 +169,7 @@ public class AuthenticationService {
     }
 
     public void logOut(LogOutRequest request) throws ParseException, JOSEException {
-        var signedToken = verifyToken(request.getToken());
+        var signedToken = verifyRefreshToken(request.getToken());
 
         String tokenId = signedToken.getJWTClaimsSet().getJWTID();
         Date expirationTime = signedToken.getJWTClaimsSet().getExpirationTime();
@@ -153,6 +188,33 @@ public class AuthenticationService {
         String tokenId = signedJWT.getJWTClaimsSet().getJWTID();
 
         Date expTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        var verified = signedJWT.verify(verifier);
+
+        if(!(verified && expTime.after(new Date()))){
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        if(invalidTokenRepository.findById(tokenId).isPresent()){
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+
+        return signedJWT;
+    }
+
+    private SignedJWT verifyRefreshToken(String refreshToken) throws JOSEException, ParseException {
+
+
+        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+
+        SignedJWT signedJWT = SignedJWT.parse(refreshToken);
+
+        String tokenId = signedJWT.getJWTClaimsSet().getJWTID();
+
+        Date expTime = new Date(signedJWT.getJWTClaimsSet()
+                .getIssueTime().toInstant()
+                .plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS)
+                .toEpochMilli());
 
         var verified = signedJWT.verify(verifier);
 
