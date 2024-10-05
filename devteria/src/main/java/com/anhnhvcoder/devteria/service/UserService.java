@@ -49,17 +49,22 @@ public class UserService implements IUserService {
 
         var role = roleRepository.findByName(ROLE.USER.name());
         user.setRoles(Set.of(role));
+        user.setActive(false);
 
         userRepository.save(user);
 
-        emailService.sendEmail(user.getEmail(), emailUtils.subjectRegister(), emailUtils.bodyRegister(user.getFirstName(), user.getLastName()));
+        emailService.sendEmail(
+                user.getEmail(),
+                emailUtils.subjectRegister(),
+                emailUtils.bodyRegister(
+                        user.getEmail(),
+                        user.getFirstName(),
+                        user.getLastName()));
 
         UserDTO dto = UserMapper.mapUserToUserDTO(user);
 
         return dto;
     }
-
-
 
     @Override
     public List<UserDTO> getAllUsers() {

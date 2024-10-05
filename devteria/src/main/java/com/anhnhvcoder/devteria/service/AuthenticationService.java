@@ -71,6 +71,8 @@ public class AuthenticationService {
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 
+        if(!user.isActive()) throw new AppException(ErrorCode.USER_NOT_ACTIVATED);
+
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());
 
         if(!authenticated) {

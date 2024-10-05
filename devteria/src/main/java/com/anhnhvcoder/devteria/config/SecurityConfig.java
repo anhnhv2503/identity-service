@@ -37,6 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/v2/users").hasAuthority("ROLE_ADMIN")
                         .requestMatchers(HttpMethod.GET, "/v2/users/profile").authenticated()
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/email/verify").permitAll()
                         .anyRequest().authenticated()
         );
 

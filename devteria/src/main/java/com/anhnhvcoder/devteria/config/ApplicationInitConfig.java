@@ -37,6 +37,7 @@ public class ApplicationInitConfig {
                         .firstName("Admin")
                         .lastName("Admin")
                         .email("prjonlineshop@gmail.com")
+                        .isActive(true)
                         .dob(LocalDate.of(2003, 3, 25))
                         .roles(Set.of(role))
                         .build();

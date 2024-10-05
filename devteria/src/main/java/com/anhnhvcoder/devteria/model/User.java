@@ -35,6 +35,7 @@ public class User {
     private String lastName;
     @DobConstraint(min = 11, message = "INVALID_DOB")
     private LocalDate dob;
+    private boolean isActive;
     @ManyToMany
     private Set<Role> roles;
 

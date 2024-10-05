@@ -16,6 +16,7 @@ public enum ErrorCode {
     ROLE_NOT_FOUND(1008, "Role not found", HttpStatus.NOT_FOUND),
     INVALID_DOB(1009, "You need to be at least {min}", HttpStatus.BAD_REQUEST),
     EMAIL_EXISTED(1010, "Email already existed", HttpStatus.BAD_REQUEST),
+    USER_NOT_ACTIVATED(1011, "User not activated", HttpStatus.BAD_REQUEST),
 ;
 
     ErrorCode(int code, String message, HttpStatus httpStatus) {
