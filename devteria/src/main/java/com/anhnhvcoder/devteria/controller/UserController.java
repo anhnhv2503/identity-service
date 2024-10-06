@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping("/v2/users")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 @Slf4j
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
 
     private final IUserService userService;
