@@ -4,6 +4,7 @@ import com.anhnhvcoder.devteria.dto.response.ApiResponse;
 import com.anhnhvcoder.devteria.dto.request.UserDTO;
 import com.anhnhvcoder.devteria.model.User;
 import com.anhnhvcoder.devteria.service.IUserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
 
         var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -52,6 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<ApiResponse<UserDTO>> getUserById(@PathVariable String id) {
 
         ApiResponse<UserDTO> apiResponse = new ApiResponse<>();
@@ -62,17 +65,20 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<UserDTO> updateUser(@PathVariable String id,@Valid @RequestBody User user) {
         return new ResponseEntity<>(userService.updateUser(id, user), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<String> deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
         return new ResponseEntity<>("User deleted", HttpStatus.OK);
     }
 
     @GetMapping("/profile")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<UserDTO> getMyProfile() {
         return new ResponseEntity<>(userService.getMyProfile(), HttpStatus.OK);
     }
